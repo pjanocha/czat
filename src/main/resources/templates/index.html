@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Main page</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.3.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+        <a class="navbar-brand" href="#">Crococo</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample09" aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExample09">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown09" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown09">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li>
+            </ul>
+
+            <form class="form-inline my-2 my-md-0">
+                <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+            </form>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="username" th:utext="${username}"></span></a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown09">
+                        <a class="dropdown-item" href="#">Profile</a>
+                        <a class="dropdown-item" th:href="@{/dictionary/add}">Add words</a>
+                        <a class="dropdown-item" th:href="@{/room/add}">Add rooms</a>
+                        <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div style="background:transparent !important" class="jumbotron">
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <span id="timer2">00:05</span>
+                        <table>
+                            <tr>
+                                <td><button type="button" class="btn btn-primary btn-lg" id="guess-button-id-1"></button></td>
+                            </tr>
+                            <tr>
+                                <td><button type="button" class="btn btn-primary btn-lg" id="guess-button-id-2"></button></td>
+                            </tr>
+                            <tr>
+                                <td><button type="button" class="btn btn-primary btn-lg" id="guess-button-id-3"></button></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Modal -->
+        <div class="modal fade" id="endModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="text-center">
+                        <form class="form-signin">
+
+                            <div class="form-group" id="modal-cont">
+                                <h1 class="h3 mb-3 font-weight-normal">GG</h1>
+                            </div>
+
+                            <a class="btn btn-primary" th:href="@{/index}">Go Home</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="table" class="table-wrapper" th:if="${not #lists.isEmpty(listRooms)}">
+            <!-- Table Title -->
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h2>Game <b>rooms</b></h2>
+                    </div>
+                    <div class="col-sm-6">
+                        <a th:href="@{/room/add}" class="btn btn-success"><i class="material-icons">&#xE147;</i> <span>Add New Room</span></a>
+                        <a th:href="@{/dictionary/add}" class="btn btn-info"><i class="material-icons">&#xe85d;</i><span>Open Dictionary</span></a>
+                    </div>
+                </div>
+            </div>
+
+            <table id="inner-table" class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Password</th>
+                    <th>Players</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="room : ${listRooms}" th:if="${room.isOpen()}">
+                    <td th:text="${room.roomId}" id="roomId"></td>
+                    <td th:text="${room.roomName}"></td>
+                    <td><a href="#" class="non-secured"><i class="material-icons">&#xe0da;</i></a></td>
+                    <!--<td th:if="${room.password.isEmpty()}">NO</td>
+                    <td th:if="${!room.password.isEmpty()}">YES</td>-->
+                    <td th:text="${room.getUsers().size()}"></td>
+                    <td>
+                        <!--
+                        <button class="btn btn-outline-dark" type="button" th:value="${room.roomId}" onclick="join2room(this)">Join</button>
+                        <a class="btn btn-outline-dark" th:href="@{/room/edit(roomId=${room.roomId})}">Rename</a> -->
+                        <a th:attr="onclick = ${'join2room(' + room.roomId +')'}" href="#" class="join"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xe7f0;</i></a>
+                        <a th:href="@{/room/edit(roomId=${room.roomId})}" class="edit"><i class="material-icons" title="Edit">&#xE254;</i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+
+        <div id="canvas-form" class="hidden">
+
+            <div id="guess">
+                <!-- <h4 id="guess-window-id" class="hidden"></h4>-->
+                <h4 id="guess-window-open-id"></h4>
+            </div>
+
+            <div id="draw">
+                <canvas id="drawing" th:width="600" th:height="600" style="pointer-events: none; border: 1px solid black" ></canvas>
+                <div id="canvas-buttons">
+                    <i id="resetButton" class="fas fa-eraser fa-2x"></i>
+                    <i id="red" class="fas fa-paint-brush fa-2x" style="color: #ff6b6b"></i>
+                    <i id="green" class="fas fa-paint-brush fa-2x" style="color: #51cf66"></i>
+                    <i id="blue" class="fas fa-paint-brush fa-2x" style="color: #339af0"></i>
+                    <i id="yellow" class="fas fa-paint-brush fa-2x" style="color: #cecf30"></i>
+                    <i id="black" class="fas fa-paint-brush fa-2x"></i>
+                </div>
+            </div>
+
+            <div id="chat-page" class="hidden">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h2>Chatroom [<span id="room-id-display"></span>]</h2>
+                        <span id="timer1">00:00</span>
+                    </div>
+                    <div class="connecting">
+                        Connecting...
+                    </div>
+                    <ul id="messageArea">
+
+                    </ul>
+                    <form id="messageForm" name="messageForm" nameForm="messageForm">
+                        <div class="form-group">
+                            <div class="input-group clearfix">
+                                <input type="text" id="message" autocomplete="off" class="form-control"/>
+                                <button type="submit" class="primary">Send</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="currentUsers" class="container">
+                <ul id="userlist" class="hidden">
+
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="page-footer font-small cyan darken-3">
+        <!-- Footer Elements -->
+
+        <div class="footer-copyright text-center py-3">© 2019
+            <a href="#"> Crococo</a>
+        </div>
+        <!-- Copyright -->
+
+    </footer>
+</div>
+
+
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/canvas.js}"></script>
+<script th:src="@{/js/connection.js}"></script>
+<script th:src="@{/js/room.js}"></script>
+<script th:src="@{/js/avatar.js}"></script>
+</body>
+</html>
